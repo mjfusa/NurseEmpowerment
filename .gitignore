@@ -2,7 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+/TextAnalyticsForHealthFunction/.vscode
 /TextAnalyticsForHealthFunction/.vs
 /TextAnalyticsForHealthFunction/bin
 /TextAnalyticsForHealthFunction/obj
 /TextAnalyticsForHealthFunction/Properties
+*.user

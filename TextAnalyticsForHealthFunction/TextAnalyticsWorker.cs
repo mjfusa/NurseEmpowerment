@@ -15,80 +15,114 @@ using System.Text;
 using System.Reflection.Metadata;
 using System.Net.Http;
 using System.Transactions;
+using System.Threading;
+using System.Net;
 
 namespace TextAnalyticsForHealthFunction
 {
     public static class Function1
     {
         private static readonly string GeneralSubscriptionKey = Environment.GetEnvironmentVariable("GENERAL-COGNITIVESERVICE-KEY");
-        private static readonly string TranslatorSubscriptionKey = Environment.GetEnvironmentVariable("GENERAL-COGNITIVESERVICE-KEY");
-        private static readonly string GeneralCognitivServiceEndPoint = "https://westeurope.cognitiveservices.azure.com";
-        private static readonly string TranslatorEndpoint = " https://api.cognitive.microsofttranslator.com";
+        private static readonly string TranslatorSubscriptionKey = Environment.GetEnvironmentVariable("TRANSLATOR-KEY");
+        private static readonly string GeneralCognitivServiceEndPoint = "https://textanalyticsforhealth101.cognitiveservices.azure.com";
+        private static readonly string TranslatorEndpoint = "https://api.cognitive.microsofttranslator.com";
        
         [FunctionName("TextAnalyticsWorker")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            string query = await new StreamReader(req.Body).ReadToEndAsync();
-            string translateRoute = "/translate?api-version=3.0&to=en";
-            var translated = await TranslateTextRequest(TranslatorSubscriptionKey, TranslatorEndpoint, translateRoute, query);
-            List<string> batchInput = new List<string>() { translated };
-            var client = new TextAnalyticsClient(new Uri(GeneralCognitivServiceEndPoint), new AzureKeyCredential(GeneralSubscriptionKey));
-            AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput);
-            await healthOperation.WaitForCompletionAsync();
-            var returnValue = new ProcessedContent();
-            await foreach (AnalyzeHealthcareEntitiesResultCollection documentsInPage in healthOperation.Value)
+            try
             {
-                foreach (AnalyzeHealthcareEntitiesResult entitiesInDoc in documentsInPage)
+                string query = await new StreamReader(req.Body).ReadToEndAsync();
+                // Model 2023-01-01-preview supports English en, Spanish es, French fr, German de, Italian it, Portuguese pt and Hebrew he
+                // Model 2022-03-01 supports only English (GA version)
+                List<string> supportedLangs = new List<string> { "en","es", "fr", "de","it", "pt", "he"};
+                var inputLang = req.Query["lang"];
+                string[] defaultLang = { "en", "us" };
+                if (!string.IsNullOrEmpty(inputLang.ToString()))
                 {
-                    if (!entitiesInDoc.HasError)
+                    defaultLang = inputLang.ToString().Split('-');
+                }
+                bool bLangSupported = supportedLangs.Contains(defaultLang[0]);
+                List<string> batchInput;
+                // var strModelVersion = "2022-03-01";
+                //var strModelVersion = "2023-01-01-preview";
+                var strModelVersion = "2022-10-01-preview";
+                if (!bLangSupported)
+                {
+                    defaultLang[0] = "en";
+                    defaultLang[1] = "us";
+                    string translateRoute = "/translate?api-version=3.0&to=en";
+                    var translated = await TranslateTextRequest(TranslatorSubscriptionKey, TranslatorEndpoint, translateRoute, query);
+                    batchInput = new List<string>() { translated };
+                }
+                else
+                {
+                    batchInput = new List<string>() { query };
+                }
+                var taco = new TextAnalyticsClientOptions() { DefaultLanguage = defaultLang[0], DefaultCountryHint = defaultLang[1] };
+                var client = new TextAnalyticsClient(new Uri(GeneralCognitivServiceEndPoint), new AzureKeyCredential(GeneralSubscriptionKey), taco);
+                AnalyzeHealthcareEntitiesOptions analyzeHealthcareEntitiesOptions = new AnalyzeHealthcareEntitiesOptions() { ModelVersion = strModelVersion};
+                AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput, defaultLang[0], analyzeHealthcareEntitiesOptions);
+                await healthOperation.WaitForCompletionAsync();
+                var returnValue = new ProcessedContent();
+                await foreach (AnalyzeHealthcareEntitiesResultCollection documentsInPage in healthOperation.Value)
+                {
+                    foreach (AnalyzeHealthcareEntitiesResult entitiesInDoc in documentsInPage)
                     {
-                        foreach (HealthcareEntityRelation relation in entitiesInDoc.EntityRelations)
+                        if (!entitiesInDoc.HasError)
                         {
-                            foreach (HealthcareEntityRelationRole role in relation.Roles)
+                            foreach (HealthcareEntityRelation relation in entitiesInDoc.EntityRelations)
                             {
-                                returnValue.Relations.Add($"{relation.RelationType}: {role.Entity.Text} ({role.Entity.Category})");
-                            }
-                        }
-
-                        foreach (var entity in entitiesInDoc.Entities)
-                        {
-                            var snowmed = entity.DataSources.FirstOrDefault(p => p.Name == "SNOMEDCT_US");
-                            var temp = new EntityInfo
-                            {
-                                Text = entity.Text,
-                                Category = entity.Category.ToString(),
-                                ConfidenceScore = entity.ConfidenceScore,
-                                Snowmed = snowmed != null ? snowmed.EntityId :  "",
-                                Length = entity.Length,
-                                NormalizedText = entity.NormalizedText,
-                                Offset = entity.Offset,
-                                SubCategory = entity.SubCategory
-                            };
-
-                            if (entity.Assertion != null)
-                            {
-                                if (entity.Assertion?.Association != null)
+                                foreach (HealthcareEntityRelationRole role in relation.Roles)
                                 {
-                                    temp.Association = entity.Assertion?.Association.Value.ToString();
-                                }
-                                if (entity.Assertion?.Certainty != null)
-                                {
-                                    temp.Certainty = entity.Assertion?.Certainty.Value.ToString();
-                                }
-                                if (entity.Assertion?.Conditionality != null)
-                                {
-                                    temp.Conditionality = entity.Assertion?.Conditionality.Value.ToString();
+                                    returnValue.Relations.Add($"{relation.RelationType}: {role.Entity.Text} ({role.Entity.Category})");
                                 }
                             }
-                            returnValue.Entities.Add(temp);
+
+                            foreach (var entity in entitiesInDoc.Entities)
+                            {
+                                var snowmed = entity.DataSources.FirstOrDefault(p => p.Name == "SNOMEDCT_US");
+                                var temp = new EntityInfo
+                                {
+                                    Text = entity.Text,
+                                    Category = entity.Category.ToString(),
+                                    ConfidenceScore = entity.ConfidenceScore,
+                                    Snowmed = snowmed != null ? snowmed.EntityId : "",
+                                    Length = entity.Length,
+                                    NormalizedText = entity.NormalizedText,
+                                    Offset = entity.Offset,
+                                    SubCategory = entity.SubCategory
+                                };
+
+                                if (entity.Assertion != null)
+                                {
+                                    if (entity.Assertion?.Association != null)
+                                    {
+                                        temp.Association = entity.Assertion?.Association.Value.ToString();
+                                    }
+                                    if (entity.Assertion?.Certainty != null)
+                                    {
+                                        temp.Certainty = entity.Assertion?.Certainty.Value.ToString();
+                                    }
+                                    if (entity.Assertion?.Conditionality != null)
+                                    {
+                                        temp.Conditionality = entity.Assertion?.Conditionality.Value.ToString();
+                                    }
+                                }
+                                returnValue.Entities.Add(temp);
+                            }
                         }
                     }
                 }
+                return new OkObjectResult(returnValue);
+            } catch(Exception ex)
+            {
+                var message = ex.Message;
+                return new BadRequestObjectResult(ex.Message);
             }
-     
-            return new OkObjectResult(returnValue);
+            
         }
 
         static public async Task<string> TranslateTextRequest(string resourceKey, string endpoint, string route, string inputText)
@@ -104,7 +138,7 @@ namespace TextAnalyticsForHealthFunction
                 request.RequestUri = new Uri(endpoint + route);
                 request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                 request.Headers.Add("Ocp-Apim-Subscription-Key", resourceKey);
-                request.Headers.Add("Ocp-Apim-Subscription-Region", "westeurope");
+                request.Headers.Add("Ocp-Apim-Subscription-Region", "westus");
 
                 // Send the request and get response.
                 HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);

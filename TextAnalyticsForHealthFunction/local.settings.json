@@ -3,7 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "GENERAL-COGNITIVESERVICE-KEY": "",
-    "TRANSLATOR-KEY": ""
+    "GENERAL-COGNITIVESERVICE-KEY": "1b07e3b0be9341cca8990c3d5911f5bb",
+    "TRANSLATOR-KEY": "1503e6124c72406b822d9d9a4ea085d4"
   }
 }

@@ -46,9 +46,11 @@ namespace TextAnalyticsForHealthFunction
                 }
                 bool bLangSupported = supportedLangs.Contains(defaultLang[0]);
                 List<string> batchInput;
-                // var strModelVersion = "2022-03-01";
-                //var strModelVersion = "2023-01-01-preview";
-                var strModelVersion = "2022-10-01-preview";
+                // var strModelVersion = "2022-03-01"; // GA
+                // var strModelVersion = "2022-10-01-preview"; // No longer supported
+                // var strModelVersion = "2023-01-01-preview"; // Most current - missing language support
+                var strModelVersion = "2022-08-15-preview"; // Has language support
+
                 if (!bLangSupported)
                 {
                     defaultLang[0] = "en";

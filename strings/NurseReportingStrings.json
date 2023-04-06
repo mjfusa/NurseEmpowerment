@@ -1,39 +1,38 @@
 Set(
  varTranslations,
- Table(
- {
-  Language: "fr-fr",
-  Labels: {
-      PersonalOverview: "Personal Overview",
-Overview: "Overview",
-Notification: "Notifications",
-Reminder: "Reminder 3 unread messages",
-Actions: "You have 3 actions that need attention",
-Topics: "Topics",
-SeeAll: "See all",
-NewAdmissions: "New admissions",
-Patients: "Patients",
-PatientsToday: "Patients Today",
-Room: "Room",
-CollaeaguesToday: "Colleagues today",
-LatestMeasurements: "Latest Measurements",
-EnterMeasurements : "Enter Measurements",
-Reporting: "Reporting", 
-Menu: "Menu",
-Measurements: "Measurements",
-Trends: "Trends",
-Hearthrate: "Hearthrate", 
-Saturation: "Saturation", 
-BloodPressure: "Blood Pressure",
-VitalSigns: "Vital Signs",
-VoiceRecognition: "Voice Recognition",
-Record: "Record",
-Send: "Send",
-Comments: "Comments",
-Save: "Save",
-Stop: "Stop",
-Result: "Result"
-  }
+ Table({
+	Language: "fr-fr",
+	Labels: {
+		PersonalOverview: "Ma vue d'ensemble",
+  		Overview: "Vue d'ensemble",
+  		Notification: "Notifications",
+  		Reminder: "Rappel 3 messages non lus",
+  		Actions: "Vous avez 3 actions en attente",
+  		Topics: "Sujets",
+  		SeeAll: "Voir tout",
+  		NewAdmissions: "Nouvelles admissions",
+  		Patients: "Patients",
+  		PatientsToday: "Patients du jour",
+  		Room: "Chambre",
+  		CollaeaguesToday: "Collègues du jour",
+  		LatestMeasurements: "Dernières mesures",
+  		EnterMeasurements : "Entrer mesures",
+  		Reporting: "Rapport", 
+  		Menu: "Menu",
+  		Measurements: "Mesures",
+  		Trends: "Tendances",
+  		Hearthrate: "Cardiograpmme", 
+  		Saturation: "Saturation", 
+  		BloodPressure: "Pression sanguine",
+  		VitalSigns: "Signes vitaux",
+  		VoiceRecognition: "Reconnaissance vocale",
+  		Record: "Enregistrer",
+  		Send: "Envoyer",
+  		Comments: "Commentaires",
+  		Save: "Sauvegarder",
+  		Stop: "Arrêter",
+  		Result: "Résultat"
+	}
 },
 {
              Language: "en-us",
@@ -67,7 +66,41 @@ Result: "Result"
 				 Save: "Save",
 				 Stop: "Stop",
 				 Result: "Result"
-  }
+	}
+},
+{
+	Language: "de-de",
+	Labels: {
+		PersonalOverview: "Persönliche Übersicht",
+		Overview: "Übersicht",
+		Notification: "Benachrichtigungen",
+		Reminder: "Erinnerung 3 ungelesene Nachrichten",
+		Actions: "Sie haben 3 Aktionen, die Ihre Aufmerksamkeit erfordern",
+		Topics: "Themen",
+		SeeAll: "Alle ansehen",
+		NewAdmissions: "Neue Aufnahmen",
+		Patients: "Patienten",
+		PatientsToday: "Patienten heute",
+		Room: "Zimmer",
+		CollaeaguesToday: "Kollegen heute",
+		LatestMeasurements: "Neueste Messungen",
+		EnterMeasurements : "Messwerte eingeben",
+		Reporting: "Berichterstattung",
+		Menu: "Menü",
+		Measurements: "Messungen",
+		Trends: "Trends",
+		Hearthrate: "Herzfrequenz",
+		Saturation: "Sättigung",
+		BloodPressure: "Blutdruck",
+		VitalSigns: "Lebenszeichen",
+		VoiceRecognition: "Spracherkennung",
+		Record: "Aufzeichnen",
+		Send: "Senden",
+		Comments: "Bemerkungen",
+		Save: "Speichern",
+		Stop: "Stop",
+		Result: "Ergebnis"
+	}
 },
 {
              Language: "sv-se",
@@ -101,7 +134,6 @@ Result: "Result"
 				 Save: "Spara",
 				 Stop: "Sluta",
 				 Result: "Resultat"
-  }
+	}
 }
-     )
-    )
+))

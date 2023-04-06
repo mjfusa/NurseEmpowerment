@@ -23,7 +23,7 @@ The scenarios were created based on nurse interviews from several hospitals and 
 
 You can find the link to the package [here](Solutions/NurseReporting_1_0_0_3.zip).
 
->Note: This fork includes a version of the solution with French language support. It includes French Speech to Text (featuring the [Dragon Medical One](https://www.nuance.com/healthcare/provider-solutions/speech-recognition/dragon-medical-one.html) service) and French support for [Azure Text Analytics for Health](https://learn.microsoft.com/en-us/azure/cognitive-services/language-service/text-analytics-for-health/overview?tabs=ner). The solution can be found [here](Solutions/NurseReporting_1_0_0_4.zip).
+>Note: This fork includes a version of the solution with English, French, German, and Swedish language support. It includes Speech to Text (featuring the [Dragon Medical One](https://www.nuance.com/healthcare/provider-solutions/speech-recognition/dragon-medical-one.html) service) in these languages and English, French, German support for [Azure Text Analytics for Health](https://learn.microsoft.com/en-us/azure/cognitive-services/language-service/text-analytics-for-health/overview?tabs=ner) Swedish text input will return the entities in English. The solution can be found [here](Solutions/NurseReporting_1_0_0_6.zip).
 
 
 ## Power App Two: Your patient information at hand

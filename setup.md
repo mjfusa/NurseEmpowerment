@@ -32,6 +32,7 @@ To activate the Nuance PCF component, you will need to provide some input to mak
 <center><img src="images//setup/nuance.png" ></center>
 
 The source code of the PCF component is also on [Github](https://github.com/iBoonz/nuance-pcf-component), feel free to enhance, modify or change in anyway you like.
+An updated version can be found here: https://github.com/mjfusa/nuance-pcf-component
 
 <br>
 

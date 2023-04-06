@@ -21,7 +21,7 @@ The scenarios were created based on nurse interviews from several hospitals and 
 -   Request or Report patient vital signs via FHIR.
 -   Connect to Shifts in Microsoft Teams and get an overview of your colleagues, Manager on Call, Doctor on Call, ...
 
-You can find the link to the package [here](Solutions/NurseReporting_1_0_0_3.zip).
+<!-- You can find the link to the package [here](Solutions/NurseReporting_1_0_0_3.zip). -->
 
 >Note: This fork includes a version of the solution with English, French, German, and Swedish language support. It includes Speech to Text (featuring the [Dragon Medical One](https://www.nuance.com/healthcare/provider-solutions/speech-recognition/dragon-medical-one.html) service) in these languages and English, French, German support for [Azure Text Analytics for Health](https://learn.microsoft.com/en-us/azure/cognitive-services/language-service/text-analytics-for-health/overview?tabs=ner) Swedish text input will return the entities in English. The solution can be found [here](Solutions/NurseReporting_1_0_0_6.zip).
 
